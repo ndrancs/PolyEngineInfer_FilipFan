@@ -5,10 +5,19 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
+/** Represents the built-in template options */
+enum class ChatTemplateOptions {
+    NONE,
+    LLAMA3,
+    GEMMA,
+}
+
 /** Represents the configuration for loading and running a Large Language Model. */
 data class LlmSettings(
     val modelPath: String,
     val tokenizerPath: String = "",
+    val chatTemplate: ChatTemplateOptions = ChatTemplateOptions.NONE,
+    val systemPrompt: String = "You are a helpful assistant.",
     val maxTokens: Int = 512,
     val topK: Int = 40,
     val topP: Float = 1.0f,

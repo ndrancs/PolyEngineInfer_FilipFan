@@ -5,8 +5,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -41,6 +44,8 @@ fun SettingsScreen(
 ) {
     var modelPath by remember { mutableStateOf(currentSettings.modelPath) }
     var tokenizerPath by remember { mutableStateOf(currentSettings.tokenizerPath) }
+    var chatTemplate by remember { mutableStateOf(currentSettings.chatTemplate) }
+    var systemPrompt by remember { mutableStateOf(currentSettings.systemPrompt) }
     var maxTokens by remember { mutableStateOf(currentSettings.maxTokens.toString()) }
     var topK by remember { mutableIntStateOf(currentSettings.topK) }
     var topP by remember { mutableFloatStateOf(currentSettings.topP) }
@@ -65,7 +70,9 @@ fun SettingsScreen(
     Dialog(onDismissRequest = onCancel) {
         Card(
             shape = MaterialTheme.shapes.large,
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier
+                .padding(16.dp)
+                .heightIn(max = 600.dp),
         ) {
             Column(
                 modifier = Modifier.padding(16.dp),
@@ -73,27 +80,70 @@ fun SettingsScreen(
             ) {
                 Text("Settings", style = MaterialTheme.typography.titleLarge)
 
-                // File selectors.
-                SettingsItem(label = "Model File", value = File(modelPath).name) {
-                    showFileSelectorFor = TargetFileType.Model
-                }
-                SettingsItem(label = "Tokenizer File", value = File(tokenizerPath).name) {
-                    showFileSelectorFor = TargetFileType.Tokenizer
-                }
+                LazyColumn(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    // File selectors.
+                    item {
+                        SettingsItem(label = "Model File", value = File(modelPath).name) {
+                            showFileSelectorFor = TargetFileType.Model
+                        }
+                    }
+                    item {
+                        SettingsItem(label = "Tokenizer File", value = File(tokenizerPath).name) {
+                            showFileSelectorFor = TargetFileType.Tokenizer
+                        }
+                    }
 
-                // Max Tokens input.
-                OutlinedTextField(
-                    value = maxTokens,
-                    onValueChange = { maxTokens = it.filter { c -> c.isDigit() } },
-                    label = { Text("Max Tokens") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    modifier = Modifier.fillMaxWidth(),
-                )
+                    // Max Tokens input.
+                    item {
+                        OutlinedTextField(
+                            value = maxTokens,
+                            onValueChange = { maxTokens = it.filter { c -> c.isDigit() } },
+                            label = { Text("Max Tokens") },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                    }
 
-                // Sliders: Top-K, Top-P, Temperature.
-                SliderSettingsItem("Top-K", topK.toFloat(), 1f..50f, 0) { topK = it.toInt() }
-                SliderSettingsItem("Top-P", topP, 0f..1f, 1) { topP = it }
-                SliderSettingsItem("Temperature", temperature, 0f..2f, 1) { temperature = it }
+                    // Sliders: Top-K, Top-P, Temperature.
+                    item {
+                        SliderSettingsItem("Top-K", topK.toFloat(), 1f..50f, 0) {
+                            topK = it.toInt()
+                        }
+                    }
+                    item {
+                        SliderSettingsItem("Top-P", topP, 0f..1f, 1) { topP = it }
+                    }
+                    item {
+                        SliderSettingsItem("Temperature", temperature, 0f..2f, 1) {
+                            temperature = it
+                        }
+                    }
+
+                    // Chat template settings.
+                    item {
+                        ChatTemplateDropdown(
+                            selectedTemplate = chatTemplate,
+                            onTemplateSelected = { chatTemplate = it },
+                        )
+                    }
+
+                    item {
+                        if (chatTemplate != ChatTemplateOptions.NONE) {
+                            OutlinedTextField(
+                                value = systemPrompt,
+                                onValueChange = { systemPrompt = it },
+                                label = { Text("System Prompt") },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(120.dp),
+                                maxLines = 5,
+                            )
+                        }
+                    }
+                }
 
                 // Action Buttons.
                 Row(
@@ -109,6 +159,8 @@ fun SettingsScreen(
                         val newSettings = LlmSettings(
                             modelPath = modelPath,
                             tokenizerPath = tokenizerPath,
+                            chatTemplate = chatTemplate,
+                            systemPrompt = systemPrompt,
                             maxTokens = maxTokens.toIntOrNull() ?: currentSettings.maxTokens,
                             topK = topK,
                             topP = topP,

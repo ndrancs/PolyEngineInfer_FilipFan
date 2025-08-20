@@ -90,8 +90,6 @@ This project utilizes the following inference engines and versions:
 
 ## Current Limitations
 
-- **No Chat Template:** Chat templates, including roles and special tokens, are not implemented.
-
 - **Stateless Conversations:** The context of multi-turn conversations is not preserved; each interaction is a new session.
 
 - **Text-Only:** The app does not handle multimodal inputs.
