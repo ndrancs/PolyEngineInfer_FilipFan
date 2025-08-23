@@ -215,3 +215,27 @@
 
  A copy of the license can be found in the file licenses/LICENSE-onnxruntime-genai.
 ==========================================================================
+
+==========================================================================
+ This project includes software from the "minja" project,
+ which is licensed under the MIT license.
+ Copyright 2024 Google LLC
+
+ A copy of the license can be found in the file licenses/LICENSE-minja.
+==========================================================================
+
+==========================================================================
+ This project includes software from the "nlohmann::json" project,
+ which is licensed under the MIT license.
+ Copyright (c) 2013-2025 Niels Lohmann
+
+ A copy of the license can be found in the file licenses/LICENSE-nlohmann-json.
+==========================================================================
+
+==========================================================================
+ This project includes software from the "chat_templates" project,
+ which is licensed under the MIT license.
+ Copyright (c) 2024 Chujie Zheng
+
+ A copy of the license can be found in the file licenses/LICENSE-chat_templates.
+==========================================================================

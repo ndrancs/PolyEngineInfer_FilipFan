@@ -67,6 +67,7 @@ dependencies {
     implementation(project(":llamacpp"))
     implementation(project(":mediapipe"))
     implementation(project(":executorch"))
+    implementation(project(":chattemplate"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
