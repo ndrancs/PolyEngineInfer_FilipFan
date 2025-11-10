@@ -36,12 +36,12 @@ adb install app-release.apk
 
 The application loads models from the app-specific directory in [external storage](https://developer.android.com/training/data-storage/app-specific#external-access-files). Before selecting a model, you need to first push the model files to this directory (typically `/storage/emulated/0/Android/data/dev.filipfan.polyengineinfer/files`).
 
-The app automatically selects the appropriate inference engine based on the model file's extension and directory structure. You can find pre-converted models for various engines for popular open-source LLMs. For example, using Llama-3.2-1B, you can download the following versions:
+The app automatically selects the appropriate inference engine based on the model file's extension and directory structure. You can find pre-converted models for various engines for popular open-source LLMs. For example,  you can download the following models:
 
 - **llama.cpp:** [hugging-quants/Llama-3.2-1B-Instruct-Q8_0-GGUF](https://huggingface.co/hugging-quants/Llama-3.2-1B-Instruct-Q8_0-GGUF/tree/main)
 - **ONNX:** [onnx-community/Llama-3.2-1B-Instruct](https://huggingface.co/onnx-community/Llama-3.2-1B-Instruct/tree/main)
 - **ExecuTorch:** [executorch-community/Llama-3.2-1B-Instruct-SpinQuant_INT4_EO8-ET](https://huggingface.co/executorch-community/Llama-3.2-1B-Instruct-SpinQuant_INT4_EO8-ET/tree/main)
-- **LiteRT:** [litert-community/Llama-3.2-1B-Instruct](https://huggingface.co/litert-community/Llama-3.2-1B-Instruct/tree/main)
+- **LiteRT:** [litert-community/Gemma3-1B-IT](https://huggingface.co/litert-community/Gemma3-1B-IT/tree/main)
 
 Download the model and push it to your device using `adb push`. For example:
 
@@ -99,6 +99,17 @@ ExecuTorch provides GPU acceleration through its [Vulkan Backend](https://docs.p
 As detailed in [How ExecuTorch Works](https://docs.pytorch.org/executorch/1.0/intro-how-it-works.html), achieving hardware acceleration requires an offline compilation step. This process targets a specific hardware backend (like Vulkan). The output is a specialized `.pte` model file compiled explicitly for that backend.
 
 The [ExportRecipe_Llama-3.2-1B_Vulkan_Backend_Instruct.ipynb](docs/notebooks/ExportRecipe_Llama-3.2-1B_Vulkan_Backend_Instruct.ipynb) notebook provides a practical example. It shows the commands needed to convert the `Llama-3.2-1B` model into a `.pte` file tailored for the Vulkan backend.
+
+#### LiteRT OpenCL Backend
+
+LiteRT uses a just-in-time (JIT) approach for GPU acceleration. Instead of requiring a pre-compiled model, it performs compute graph rewriting and operator mapping for the GPU at runtime. This means a single model file can be used for either CPU or GPU inference.
+
+LiteRT's GPU acceleration is built on OpenCL (the default) and OpenGL on Android. In this application, you can use the settings UI to switch the inference backend between CPU and GPU when a LiteRT model is selected.
+
+> [!NOTE]
+>
+> GPU acceleration is not guaranteed for all models. Compatibility depends on the model's specific operators and precision requirements. Please refer to [TFLite on GPU](https://github.com/google-ai-edge/LiteRT/tree/v1.4.0/tflite/delegates/gpu#tflite-on-gpu) for details.
+
 
 ## Current Limitations
 

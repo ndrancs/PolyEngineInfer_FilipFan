@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import dev.filipfan.polyengineinfer.api.LlmInferenceOptions
 import dev.filipfan.polyengineinfer.api.LlmModelFiles
 import dev.filipfan.polyengineinfer.chattemplate.BuiltInTemplates
+import dev.filipfan.polyengineinfer.ui.settings.Backend
 import dev.filipfan.polyengineinfer.ui.settings.ChatTemplateOptions
 import dev.filipfan.polyengineinfer.ui.settings.LlmSettings
 import kotlinx.coroutines.Job
@@ -73,6 +74,7 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
                         topK = config.topK,
                         topP = config.topP,
                         temperature = config.temperature,
+                        backend = toApiBackend(config.backend),
                     ),
                     toBuiltInTemplate(config.chatTemplate),
                     config.systemPrompt,
@@ -163,6 +165,16 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
 
         ChatTemplateOptions.NONE -> {
             null
+        }
+    }
+
+    private fun toApiBackend(backend: Backend): LlmInferenceOptions.Backend = when (backend) {
+        Backend.CPU -> {
+            LlmInferenceOptions.Backend.CPU
+        }
+
+        Backend.GPU -> {
+            LlmInferenceOptions.Backend.GPU
         }
     }
 }

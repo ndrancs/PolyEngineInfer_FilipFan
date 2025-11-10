@@ -12,6 +12,12 @@ enum class ChatTemplateOptions {
     GEMMA,
 }
 
+/** The backend to use for inference. */
+enum class Backend {
+    CPU,
+    GPU,
+}
+
 /** Represents the configuration for loading and running a Large Language Model. */
 data class LlmSettings(
     val modelPath: String,
@@ -22,6 +28,7 @@ data class LlmSettings(
     val topK: Int = 40,
     val topP: Float = 1.0f,
     val temperature: Float = 0.8f,
+    val backend: Backend = Backend.CPU,
 )
 
 /** A ViewModel responsible for managing and exposing the settings for the UI. */

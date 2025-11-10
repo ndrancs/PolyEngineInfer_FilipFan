@@ -9,11 +9,18 @@ data class LlmInferenceOptions(
     val topP: Float = 1.0f,
     /** Randomness when decoding the next token. A value of 0.0f means greedy decoding. */
     val temperature: Float = 0.8f,
+    /** The backend to use for inference. */
+    val backend: Backend = Backend.CPU,
 ) {
     init {
         require(maxTokens > 0) { "maxTokens must be positive." }
         require(topK > 0) { "topK must be positive." }
         require(topP in 0.0f..1.0f) { "topP must be in the range [0.0, 1.0]." }
         require(temperature in 0.0f..2.0f) { "temperature must be in the range [0.0, 2.0]." }
+    }
+
+    enum class Backend {
+        CPU,
+        GPU,
     }
 }
