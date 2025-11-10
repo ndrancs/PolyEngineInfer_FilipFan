@@ -50,6 +50,7 @@ fun SettingsScreen(
     var topK by remember { mutableIntStateOf(currentSettings.topK) }
     var topP by remember { mutableFloatStateOf(currentSettings.topP) }
     var temperature by remember { mutableFloatStateOf(currentSettings.temperature) }
+    var backend by remember { mutableStateOf(currentSettings.backend) }
 
     var showFileSelectorFor by remember { mutableStateOf<TargetFileType?>(null) }
 
@@ -122,16 +123,30 @@ fun SettingsScreen(
                         }
                     }
 
-                    // Chat template settings.
+                    // Dropdown: Backend selection.
+                    if (isLiteRtModel(modelPath)) {
+                        item {
+                            SettingsEnumDropdown(
+                                label = "Select Backend",
+                                items = Backend.entries,
+                                selectedItem = backend,
+                                onItemSelected = { backend = it },
+                            )
+                        }
+                    }
+
+                    // Dropdown: Chat template settings.
                     item {
-                        ChatTemplateDropdown(
-                            selectedTemplate = chatTemplate,
-                            onTemplateSelected = { chatTemplate = it },
+                        SettingsEnumDropdown(
+                            label = "Select Chat Template",
+                            items = ChatTemplateOptions.entries,
+                            selectedItem = chatTemplate,
+                            onItemSelected = { chatTemplate = it },
                         )
                     }
 
-                    item {
-                        if (chatTemplate != ChatTemplateOptions.NONE) {
+                    if (chatTemplate != ChatTemplateOptions.NONE) {
+                        item {
                             OutlinedTextField(
                                 value = systemPrompt,
                                 onValueChange = { systemPrompt = it },
@@ -165,6 +180,7 @@ fun SettingsScreen(
                             topK = topK,
                             topP = topP,
                             temperature = temperature,
+                            backend = backend,
                         )
                         onSave(newSettings)
                     }) {
@@ -174,4 +190,10 @@ fun SettingsScreen(
             }
         }
     }
+}
+
+private fun isLiteRtModel(path: String): Boolean {
+    val modelFile = File(path)
+
+    return modelFile.isFile && modelFile.extension.lowercase() == "task"
 }

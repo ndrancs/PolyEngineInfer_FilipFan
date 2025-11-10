@@ -19,20 +19,23 @@ import androidx.compose.ui.Modifier
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChatTemplateDropdown(
-    selectedTemplate: ChatTemplateOptions,
-    onTemplateSelected: (ChatTemplateOptions) -> Unit,
+fun <T : Enum<T>> SettingsEnumDropdown(
+    label: String,
+    items: List<T>,
+    selectedItem: T,
+    onItemSelected: (T) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     var isExpanded by remember { mutableStateOf(false) }
 
-    Column {
-        Text("Select Chat Template", style = MaterialTheme.typography.labelLarge)
+    Column(modifier = modifier) {
+        Text(label, style = MaterialTheme.typography.labelLarge)
         ExposedDropdownMenuBox(
             expanded = isExpanded,
             onExpandedChange = { isExpanded = it },
         ) {
             OutlinedTextField(
-                value = selectedTemplate.name,
+                value = selectedItem.name,
                 onValueChange = {},
                 readOnly = true,
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded) },
@@ -46,11 +49,11 @@ fun ChatTemplateDropdown(
                 expanded = isExpanded,
                 onDismissRequest = { isExpanded = false },
             ) {
-                ChatTemplateOptions.entries.forEach { template ->
+                items.forEach { item ->
                     DropdownMenuItem(
-                        text = { Text(template.name) },
+                        text = { Text(item.name) },
                         onClick = {
-                            onTemplateSelected(template)
+                            onItemSelected(item)
                             isExpanded = false
                         },
                     )

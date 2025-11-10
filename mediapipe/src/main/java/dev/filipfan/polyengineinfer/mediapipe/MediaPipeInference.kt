@@ -34,12 +34,17 @@ class MediaPipeInference(private val context: Context) : LlmInferenceEngine {
     override suspend fun load(path: LlmModelFiles, options: LlmInferenceOptions) {
         withContext(Dispatchers.IO) {
             cleanUp()
+            val preferredBackend =
+                when (options.backend) {
+                    LlmInferenceOptions.Backend.CPU -> LlmInference.Backend.CPU
+                    LlmInferenceOptions.Backend.GPU -> LlmInference.Backend.GPU
+                }
             val engine = LlmInference.createFromOptions(
                 context,
                 LlmInference.LlmInferenceOptions.builder()
                     .setModelPath(path.modelPath)
                     .setMaxTokens(options.maxTokens)
-                    .setPreferredBackend(LlmInference.Backend.CPU)
+                    .setPreferredBackend(preferredBackend)
                     .build(),
             )
             instance = LlmModelInstance(engine = engine, session = null, options = options)
