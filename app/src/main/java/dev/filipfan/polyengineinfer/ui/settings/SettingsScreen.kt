@@ -136,26 +136,29 @@ fun SettingsScreen(
                     }
 
                     // Dropdown: Chat template settings.
-                    item {
-                        SettingsEnumDropdown(
-                            label = "Select Chat Template",
-                            items = ChatTemplateOptions.entries,
-                            selectedItem = chatTemplate,
-                            onItemSelected = { chatTemplate = it },
-                        )
-                    }
-
-                    if (chatTemplate != ChatTemplateOptions.NONE) {
+                    // TODO: (refactor) LiteRT-LM built-in chat template.
+                    if (!isLiteRtModel(modelPath)) {
                         item {
-                            OutlinedTextField(
-                                value = systemPrompt,
-                                onValueChange = { systemPrompt = it },
-                                label = { Text("System Prompt") },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(120.dp),
-                                maxLines = 5,
+                            SettingsEnumDropdown(
+                                label = "Select Chat Template",
+                                items = ChatTemplateOptions.entries,
+                                selectedItem = chatTemplate,
+                                onItemSelected = { chatTemplate = it },
                             )
+                        }
+
+                        if (chatTemplate != ChatTemplateOptions.NONE) {
+                            item {
+                                OutlinedTextField(
+                                    value = systemPrompt,
+                                    onValueChange = { systemPrompt = it },
+                                    label = { Text("System Prompt") },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(120.dp),
+                                    maxLines = 5,
+                                )
+                            }
                         }
                     }
                 }
@@ -192,8 +195,6 @@ fun SettingsScreen(
     }
 }
 
-private fun isLiteRtModel(path: String): Boolean {
-    val modelFile = File(path)
-
-    return modelFile.isFile && modelFile.extension.lowercase() == "task"
+private fun isLiteRtModel(path: String): Boolean = File(path).run {
+    isFile && extension.lowercase() in setOf("task", "litertlm")
 }

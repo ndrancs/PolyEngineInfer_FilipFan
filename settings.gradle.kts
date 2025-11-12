@@ -23,7 +23,7 @@ rootProject.name = "PolyEngineInfer"
 include(":app")
 include(":api")
 include(":llamacpp")
-include(":mediapipe")
+include(":litertlm")
 include(":onnx")
 include(":executorch")
 include(":chattemplate")

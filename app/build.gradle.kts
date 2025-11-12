@@ -65,7 +65,7 @@ dependencies {
     implementation(project(":onnx"))
     implementation(fileTree(mapOf("dir" to "../onnx/libs", "include" to listOf("*.aar"))))
     implementation(project(":llamacpp"))
-    implementation(project(":mediapipe"))
+    implementation(project(":litertlm"))
     implementation(project(":executorch"))
     implementation(project(":chattemplate"))
 
