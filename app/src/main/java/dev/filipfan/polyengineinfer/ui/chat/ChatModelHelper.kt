@@ -7,8 +7,8 @@ import dev.filipfan.polyengineinfer.api.LlmModelFiles
 import dev.filipfan.polyengineinfer.chattemplate.BuiltInTemplates
 import dev.filipfan.polyengineinfer.chattemplate.TemplateFormatter
 import dev.filipfan.polyengineinfer.executorch.ExecuTorchInference
+import dev.filipfan.polyengineinfer.litertlm.LiteRtLmInference
 import dev.filipfan.polyengineinfer.llamacpp.LlamaCppInference
-import dev.filipfan.polyengineinfer.mediapipe.MediaPipeInference
 import dev.filipfan.polyengineinfer.onnx.OnnxInference
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -61,8 +61,11 @@ class ChatModelHelper(
 
     init {
         engine = createEngineFromPath(context, modelFiles.modelPath, modelFiles.tokenizerPath)
-        templateType?.let {
-            templateFormatter = TemplateFormatter(it)
+        // TODO: (refactor) LiteRT-LM built-in chat template.
+        if (engine !is LiteRtLmInference) {
+            templateType?.let {
+                templateFormatter = TemplateFormatter(it)
+            }
         }
     }
 
@@ -146,9 +149,9 @@ class ChatModelHelper(
                         LlamaCppInference()
                     }
 
-                    "task" -> {
+                    "task", "litertlm" -> {
                         modelTag = "${modelFile.name} (LiteRT)"
-                        MediaPipeInference(context)
+                        LiteRtLmInference(context)
                     }
 
                     "pte" -> {
